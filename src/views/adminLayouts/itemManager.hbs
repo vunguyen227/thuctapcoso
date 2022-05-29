@@ -1,0 +1,83 @@
+{{> headerAdmin}}
+
+<div class="admin_body" style="padding: 30px; margin: 0px 5% 0px 5%; border-radius: 10px; margin-top: 20px;">
+
+    <div class="product-compartment row">
+        <span>Quản lí các sản phẩm</span>
+        <hr class="col ">
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">STT</th>
+                <th scope="col">ID sản phẩm</th>
+                <th scope="col">Tên sản phẩm</th>
+                <th scope="col">Hãng sản phẩm</th>
+                <th scope="col">Mô tả sản phẩm</th>
+                <th scope="col">Giá</th>
+                <th scope="col">Số lượng</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each dataItem}}
+            <tr>
+                <th scope="row">{{sum @index 1}}</th>
+                <td>{{this.id}}</td>
+                <td>{{this.name}}</td>
+                <td>{{this.manufacturer}}</td>
+                <td>{{this.description}}</td>
+                <td>{{this.price}}</td>
+                <td>{{this.quantity}}</td>
+                <td>
+                    <a class="btn btn-success" href="/admin/edit/{{this.id}}">Chỉnh sửa</a>
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-whatever="{{this.id}}"
+                        data-target="#deleteItem">Xoá</button>
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="deleteItem" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Chú ý</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc xoá sản phẩm này đi không ?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" id="btnDeleteItem" class="btn btn-danger">Xoá</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form method="POST" name="form-delete-item"></form>
+
+<script>
+    var item_id
+    var btnDeleteItem = document.getElementById('btnDeleteItem')
+    var form = document.forms['form-delete-item']
+
+    $('#deleteItem').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget)
+        item_id = button.data('whatever')
+    })
+
+    btnDeleteItem.onclick = () => {
+        form.action = '/admin/deleteItem/' + item_id
+        form.submit()
+    }
+</script>
+
+<script src="/js/home_admin.js"></script>

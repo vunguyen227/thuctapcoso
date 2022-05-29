@@ -1,0 +1,85 @@
+{{> headerAdmin}}
+
+<div class="product-compartment row" style="margin : 20px 5% 20px 5%">
+    <span>Quản lí các đơn hàng</span>
+    <hr class="col ">
+</div>
+
+<div class="admin_body container" style="padding: 30px; border-radius: 8px; margin-bottom: 40px;">
+
+    <div class="row" style="margin-bottom: 20px;">
+        <h6 class="col-2" style="text-align: center;">Tên khách hàng</h6>
+        <h6 class="col-5" style="text-align: center;">Tên sản phẩm - giá - số lượng mua</h6>
+        <h6 class="col-2" style="text-align: center;">Thời gian đặt hàng</h6>
+        <h6 class="col" style="text-align: center;">Chức năng</h6>
+
+    </div>
+
+    <hr>
+
+    {{#each order}}
+
+    <div class="row">
+        <p class="col-2">{{this.name}}</p>
+        <div class="col-5">
+            {{#each this.order_detail}}
+            <p>{{this.name}} - {{vnd this.price}} - {{this.quantityOrder}}</p>
+            {{/each}}
+        </div>
+        <p class="col-2">{{this.created_at}}</p>
+        <div class="col">
+            <a href="/admin/order/{{this.id}}" type="button" class="btn btn-success" style="color: white;">Xem chi
+                tiết</a>
+            <button type="button" class="btn btn-success" data-toggle="modal" data-whatever="{{this.id}}"
+                data-target="#confirmOrder">
+                Đã giao
+            </button>
+        </div>
+    </div>
+    <hr>
+    {{/each}}
+</div>
+
+
+<!-- Modal Confirm -->
+<div class="modal fade" id="confirmOrder" tabindex="-1" aria-labelledby="Confirm" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deliveredLabel">Chú ý</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Xác nhận đơn hàng đã được giao tới khách hàng ?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" id="btnSubmitOrder" class="btn btn-primary">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form method="POST" name="form-confirm-order"></form>
+
+<script>
+    var order_id
+    var btnSubmitOrder = document.getElementById('btnSubmitOrder')
+    var form = document.forms['form-confirm-order']
+
+    $('#confirmOrder').on('show.bs.modal', function (event) {
+        const button = $(event.relatedTarget)
+        order_id = button.data('whatever')
+    })
+
+    btnSubmitOrder.onclick = () => {
+        form.action = '/admin/delivered/' + order_id
+        form.submit()
+    }
+
+</script>
+
+
+<script src="/js/home_admin.js"></script>

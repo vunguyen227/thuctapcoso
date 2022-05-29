@@ -1,0 +1,61 @@
+<div style="background-color: #4682B4;">
+    <div class="login-background">
+        <div class="container-login">
+            <h1>Wellcome to Shop</h1>
+            <p id="error" style="text-align: center; color: red;"></p>
+            <form method="POST" action="/login">
+                <div class="form-control-login">
+                    <input type="text" name="phone" required>
+                    <label>Phone number</label>
+                </div>
+
+                <div class="form-control-login">
+                    <input type="password" name="password" required>
+                    <label>Password</label>
+                </div>
+
+                <button class="btn-login">Login</button>
+
+                <p class="text">Don't have an account? <a href="/register">Register</a> </p>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    const labels = document.querySelectorAll('.form-control-login label')
+
+    labels.forEach(label => {
+        label.innerHTML = label.innerText
+            .split('')
+            .map((letter, idx) => `<span style="transition-delay:${idx * 50}ms">${letter}</span>`)
+            .join('')
+    })
+
+
+    ////// set error ////////
+    function getCookie(cname) {
+        let name = cname + "=";
+        let decodedCookie = decodeURIComponent(document.cookie);
+        let ca = decodedCookie.split(';');
+        for (let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
+
+    const er = document.getElementById('error')
+    const cookie_error = getCookie("error")
+
+    if (cookie_error != '') {
+        er.innerHTML = "Tài khoản hoặc mật khẩu không chính xác"
+        document.cookie = "error=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    }
+
+</script>

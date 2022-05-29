@@ -1,0 +1,176 @@
+{{> headerAdmin}}
+
+<body>
+    <div class="container"
+        style="padding: 20px; background-color: white; margin-top: 20px; margin-bottom: 50px; border-radius: 10px;">
+
+
+        <div class="product-compartment row">
+            <span>Quản lí doanh thu</span>
+            <hr class="col ">
+        </div>
+
+        <form action="/admin/revenue">
+            <label for="birthday">Chọn ngày cần kiểm tra doanh thu : </label>
+            <input type="date" id="birthday" name="time">
+            <button type="submit" class="btn btn-success" style="margin-left: 10px; display: inline;">Kiểm tra</button>
+
+        </form>
+
+        <h4 style="margin : 30px 0px 10px 0px; text-align: center; color: #ff8533;">Doanh thu ngày : {{get_time}}</h4>
+        <div class="row">
+            <div class="col-3">
+                <div class="counter orderday">
+                    <p>Số đơn của ngày</p>
+                    <h2>0</h2>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="counter revenueday">
+                    <p>Doanh thu của ngày</p>
+                    <h2>0</h2>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="counter ordermonth">
+                    <p>Số đơn hàng tháng</p>
+                    <h2>0</h2>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="counter revenuemonth">
+                    <p>Doanh thu của tháng</p>
+                    <h2>0</h2>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row" style="margin : 50px 0px 50px 0px">
+            <div class="col">
+                <h5 style="text-align: center; color: #ff8533;">TOP SẢN PHẨM BÁN CHẠY NHẤT CỦA NGÀY</h5>
+
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">STT</th>
+                            <th scope="col" style="text-align: center;">Tên sản phẩm</th>
+                            <th scope=" col" style="text-align: center;">Số sản phẩm đã bán</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each hot_day}}
+                        <tr>
+                            <th scope="row">{{sum @index 1}}</th>
+                            <td style="text-align: center;">{{this.name}}</td>
+                            <td style="text-align: center;">{{this.sum}}</td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+            <div class="col">
+                <h5 style="text-align: center;  color: #ff8533;">TOP 10 SẢN PHẨM BÁN CHẠY NHẤT THÁNG</h5>
+
+
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">STT</th>
+                            <th scope="col" style="text-align: center;">Tên sản phẩm</th>
+                            <th scope="col" style="text-align: center;">Số sản phẩm đã bán</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each hot_month}}
+                        <tr>
+                            <th scope="row">{{sum @index 1}}</th>
+                            <td style="text-align: center;">{{this.name}}</td>
+                            <td style="text-align: center;">{{this.sum}}</td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div style="margin: 80px 0 80px 0;">
+            <h5 style="text-align: center;  color: #ff8533;">CÁC ĐƠN HÀNG NGÀY {{get_time}}</h5>
+
+            <div class="admin_body container" style="padding: 30px; border-radius: 8px; margin-bottom: 40px;">
+
+                <div class="row" style="margin-bottom: 20px;">
+                    <h6 class="col-2" style="text-align: center;">Tên khách hàng</h6>
+                    <h6 class="col-5" style="text-align: center;">Tên sản phẩm - giá - số lượng mua</h6>
+                    <h6 class="col-3" style="text-align: center;">Thời gian đặt hàng</h6>
+                    <h6 class="col" style="text-align: center;">Chức năng</h6>
+
+                </div>
+
+                <hr>
+
+                {{#each order}}
+
+                <div class="row">
+                    <p class="col-2">{{this.name}}</p>
+                    <div class="col-5">
+                        {{#each this.order_detail}}
+                        <p>{{this.name}} - {{vnd this.price}} - {{this.quantityOrder}}</p>
+                        {{/each}}
+                    </div>
+                    <p class="col-3">{{this.created_at}}</p>
+                    <div class="col">
+                        <a href="/admin/order/{{this.id}}" type="button" class="btn btn-success"
+                            style="color: white;">Xem chi
+                            tiết</a>
+                    </div>
+                </div>
+                <hr>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+</body>
+
+
+<script>
+    const orderday = document.querySelector('.counter.orderday h2')
+    const ordermonth = document.querySelector('.counter.ordermonth h2')
+    const revenueday = document.querySelector('.counter.revenueday h2')
+    const revenuemonth = document.querySelector('.counter.revenuemonth h2')
+
+    function counterUp(el, to) {
+        let speed = 300
+        let from = 0
+        let step = to / speed
+        const counter = setInterval(function () {
+            from += step
+            if (from > to) {
+                clearInterval(counter)
+                from = to
+            }
+
+            a = Math.ceil(from) + ''
+            let mn = a.split('').reverse(), count = 0
+            res = ''
+            for (let i = 0; i < mn.length; i++) {
+                count++
+                res += mn[i]
+                if (count % 3 == 0 && i != mn.length - 1)
+                    res += '.'
+            }
+            el.innerText = res.split('').reverse().join('')
+        }, 1)
+    }
+
+
+
+
+    counterUp(orderday, {{ revenue.order_today }})
+    counterUp(ordermonth, {{ revenue.order_month }})
+
+    const cost_today = {{ sum revenue.cost_today 0}}
+    const cost_month = {{ sum revenue.cost_month 0}}
+    counterUp(revenueday, cost_today)
+    counterUp(revenuemonth, cost_month)
+</script>
